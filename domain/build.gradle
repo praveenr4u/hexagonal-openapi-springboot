@@ -1,0 +1,7 @@
+dependencies {
+    implementation "org.projectlombok:lombok:${lombokVersion}"
+    testImplementation "org.assertj:assertj-core:${assertjVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+}
+
+description = 'java-template-domain'

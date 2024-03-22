@@ -1,0 +1,12 @@
+include(':java-template-application')
+include(':java-template-domain')
+include(':java-template-service')
+include(':java-template-api')
+include(':java-template-infrastructure-data')
+project(":java-template-application").projectDir = file('application')
+project(":java-template-domain").projectDir = file('domain')
+project(":java-template-service").projectDir = file('service')
+project(":java-template-api").projectDir = file('api')
+project(":java-template-infrastructure-data").projectDir = file('infrastructure-data')
+
+rootProject.name = 'launch-api-hex-java-template'

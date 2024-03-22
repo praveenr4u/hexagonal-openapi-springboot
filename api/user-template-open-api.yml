@@ -1,0 +1,277 @@
+openapi: 3.0.3
+info:
+  title: Launch Template REST API
+  description: The Launch Template solution is a polyglot application intended to showcase various capabilities Launch can provide clients. This REST API is an implementation of the API Gateway pattern providing a facade layer for the backend services utilized by the micro-frontend application.
+  version: '1.0'
+  contact:
+    name: Wladimir Fraga
+    email: wladimir.fraga@nttdata.com
+servers:
+  - url: 'http://localhost:8080/launch-api-hex-template/v1'
+    description: 'Sandbox server (uses test data)'
+tags:
+  - name: Users
+    description: Provides the set of capabilities the Launch Template frontend or other backend services will use to interact with the Launch Template REST API
+paths:
+  '/users':
+    get:
+      operationId: GetAllUsers
+      description: Get All Users.
+      summary: Get all Users details
+      tags:
+        - Users
+      responses:
+        '200':
+          $ref: '#/components/responses/UsersResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '500':
+          $ref: '#/components/responses/UnexpectedErrorResponse'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailableResponse'
+    post:
+      operationId: CreateUser
+      description: Create User.
+      summary: Adds a new User
+      tags:
+        - Users
+      requestBody:
+        $ref: '#/components/requestBodies/CreateUserRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/UserResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '500':
+          $ref: '#/components/responses/UnexpectedErrorResponse'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailableResponse'
+  '/users/{username}':
+    get:
+      operationId: GetUser
+      description: Retrieves Get User Details By username.
+      summary: Gets User Details
+      tags:
+        - Users
+      parameters:
+        - $ref: '#/components/parameters/username'
+      responses:
+        '200':
+          $ref: '#/components/responses/UserResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/UnexpectedErrorResponse'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailableResponse'
+    put:
+      operationId: UpdateUser
+      description: Update User details
+      summary: Updates User
+      tags:
+        - Users
+      parameters:
+        - $ref: '#/components/parameters/username'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateUserRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/UserResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/UnexpectedErrorResponse'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailableResponse'
+    delete:
+      operationId: DeleteUser
+      description: Update User details
+      summary: Updates User
+      tags:
+        - Users
+      parameters:
+        - $ref: '#/components/parameters/username'
+      responses:
+        '200':
+          $ref: '#/components/responses/UserResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/UnexpectedErrorResponse'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailableResponse'
+components:
+  parameters:
+    username:
+      name: username
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Username'
+  requestBodies:
+    CreateUserRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateUserRequest'
+    UpdateUserRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateUserRequest'
+  responses:
+    BadRequestResponse:
+      description: 'Bad Request response indicating that the server cannot process the request due to malformed request syntax, invalid request message framing, etc., and request must not be repeated without modification.'
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    NotFoundResponse:
+      description: 'Not found response indicating that the server did not found the target resource or is not willing to disclose its existence, either temporary or permanent.'
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    ServiceUnavailableResponse:
+      description: The service is currently unavailable.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    UnexpectedErrorResponse:
+      description: An error occurred while processing the request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    UserResponse:
+      description: The User details are included in the response body.
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/User'
+    UsersResponse:
+      description: The User details for all users.
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/Users'
+  schemas:
+    ProblemDetails:
+      description: 'Represents the details of a problem that occurred while processing a request. This object is consistent with RFC 7807, “Problem Details for HTTP APIs” (https://tools.ietf.org/html/rfc7807).'
+      type: object
+      properties:
+        detail:
+          type: string
+          additionalProperties:
+            type: string
+          description: A human readable explanation specific to this occurrence of the problem.
+          example: 'Connection to database timed out'
+        instance:
+          type: string
+          format: uri
+          description: An absolute URI that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
+        status:
+          type: integer
+          format: int32
+          description: The HTTP status code generated by the origin server for this occurrence the problem.
+          minimum: 100
+          maximum: 600
+          exclusiveMaximum: true
+          example: 503
+        title:
+          type: string
+          description: 'A short, summary of the problem type. Written in english and readable for engineers (usually not suited for non technical stakeholders and not localized);'
+          example: 'Service Unavailable'
+        type:
+          type: string
+          format: uri
+          description: 'An absolute URI that identifies the problem type.  When dereferenced, it SHOULD provide human-readable documentation for the problem type (e.g., using HTML).'
+          default: 'about:blank'
+          example: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503'
+    Users:
+      type: array
+      items:
+        $ref: '#/components/schemas/User'
+    User:
+      type: object
+      description: Represents details about User
+      properties:
+        username:
+          $ref: '#/components/schemas/Username'
+        name:
+          $ref: '#/components/schemas/Name'
+        email:
+          $ref: '#/components/schemas/Email'
+        createdAt:
+          $ref: '#/components/schemas/CreatedAt'
+        updatedAt:
+          $ref: '#/components/schemas/UpdatedAt'
+    Username:
+      type: string
+      description: Represents a standard User identifier
+      pattern: '^[a-zA-Z][a-zA-Z0-9-_]{2,20}$'
+      example: wlad_fra-ga
+    Name:
+      type: string
+      description: Represents the User first and lastname
+      pattern: ^(?=.{1,30}$)[a-zA-Z]{2,}\s[a-zA-Z]{1,}'?-?[a-zA-Z]{0,15}\s?([a-zA-Z]{1})?$
+      example: Wladimir Fraga
+    Email:
+      type: string
+      description: Represents the User email
+      format: email
+      example: wladimir.fraga@nttdata.com
+    CreatedAt:
+      type: string
+      format: timestamp
+      description: Creation date and time UTC ISO 8601 full-time format
+      example: '2023-02-28T16:30:48.013109Z'
+    UpdatedAt:
+      type: string
+      format: timestamp
+      description: Updated at date and time UTC ISO 8601 full-time format
+      example: '2023-02-28T16:30:48.013109Z'
+    CreateUserRequest:
+      type: object
+      description: Represents details about User to be used in create operations
+      required:
+        - username
+        - name
+        - email
+      properties:
+        username:
+          $ref: '#/components/schemas/Username'
+        name:
+          $ref: '#/components/schemas/Name'
+        email:
+          $ref: '#/components/schemas/Email'
+    UpdateUserRequest:
+      type: object
+      description: Represents details about User to be used in update operations
+      required:
+        - name
+        - email
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        email:
+          $ref: '#/components/schemas/Email'
+  securitySchemes:
+    apiKeyHeader:
+      type: apiKey
+      name: Ocp-Apim-Subscription-Key
+      in: header
+    apiKeyQuery:
+      type: apiKey
+      name: subscription-key
+      in: query
+security:
+  - apiKeyHeader: [ ]
+  - apiKeyQuery: [ ]

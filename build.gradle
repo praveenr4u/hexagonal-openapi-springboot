@@ -1,0 +1,103 @@
+plugins {
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'jacoco'
+    id 'java'
+}
+
+// Apply the JaCoCo plugin in the root build.gradle
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = "0.8.8" // Specify the JaCoCo version
+}
+
+subprojects {
+    group = 'com.launch.template'
+
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java'
+    apply plugin: 'jacoco'
+
+    repositories {
+        mavenCentral()
+    }
+
+    ext {
+        springBootVersion = "3.2.3"
+        lombokVersion = "1.18.24"
+        assertjVersion = "3.23.1"
+        junitVersion = "5.9.1"
+        mapStructVersion = "1.5.5.Final"
+        jacksonVersion = "2.0.1"
+        mockitoVersion = "5.3.1"
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-starter-parent:${springBootVersion}"
+
+        }
+
+    }
+
+    configurations {
+        configureEach {
+            exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+        }
+    }
+
+    dependencies {
+        // Define test dependencies for all subprojects
+        testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+        testImplementation "org.assertj:assertj-core:${assertjVersion}"
+        // Mockito JUnit Jupiter support
+        testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
+        // Mockito for mocking in tests
+        testImplementation "org.mockito:mockito-core:${mockitoVersion}"
+    }
+
+    jacoco {
+        toolVersion = "0.8.8"
+    }
+
+    tasks.named('test') {
+        useJUnitPlatform()
+        finalizedBy jacocoTestReport // Generate report after running tests
+    }
+
+    compileJava {
+        sourceCompatibility = 17
+    }
+
+}
+
+// Task to generate an aggregated report
+task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
+// Depends on all the test tasks running
+    dependsOn = subprojects.test
+
+// Aggregate execution data from all subprojects
+    executionData.setFrom(fileTree(rootDir.absolutePath).include("**/build/jacoco/test.exec"))
+
+// Define the source sets from all subprojects
+    subprojects.each {
+        sourceSets it.sourceSets.main
+    }
+
+    reports {
+        reports {
+            xml.required = true
+            csv.required = false
+            html.required = true // Enable HTML report by setting required to true
+        }
+    }
+}
+
+// Configure the report's output location and format
+jacocoRootReport {
+    reports {
+        xml.destination = file("${buildDir}/reports/jacoco/xml/jacocoRootReport.xml")
+        html.destination = file("${buildDir}/reports/jacoco/html")
+    }
+}

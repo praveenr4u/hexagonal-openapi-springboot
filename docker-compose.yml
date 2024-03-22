@@ -1,0 +1,35 @@
+version: '2'
+
+services:
+  launchApi:
+    image: 'dockeraccountusername/launch-api:s1'
+    build:
+      context: .
+    container_name: launchApi
+    ports:
+      - "8087:8080"
+    depends_on:
+      - postgresDb
+    env_file:
+      - docker.env
+
+  postgresDb:
+    image: 'postgres:13.1-alpine'
+    container_name: postgresDb
+    ports:
+      - '15432:5432'
+    env_file:
+      - docker.env
+
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - "5050:80"
+    env_file:
+      - docker.env
+
+
+
+

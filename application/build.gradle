@@ -1,0 +1,10 @@
+dependencies {
+
+    implementation "org.projectlombok:lombok:${lombokVersion}"
+    implementation project(':java-template-domain')
+    implementation "org.springframework.boot:spring-boot-starter-log4j2"
+    implementation "org.springframework:spring-context:6.0.6"
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+}
+
+description = 'java-template-application'

@@ -1,0 +1,4 @@
+mkdir java-template
+mkdir api application domain infrastructure-data service
+copy the openOPI file inside api folder
+mkdir -p service/src/main/java/com/launch/template/service

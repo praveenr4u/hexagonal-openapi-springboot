@@ -1,0 +1,35 @@
+plugins {
+    id "org.openapi.generator" version "6.2.0"
+}
+
+dependencies {
+    implementation "org.openapitools:openapi-generator-gradle-plugin:6.2.0"
+}
+
+apply plugin: 'org.openapi.generator'
+
+compileJava {
+    dependsOn tasks.openApiGenerate
+}
+
+
+openApiGenerate {
+    generatorName = "spring"
+    library = "spring-boot"
+
+    inputSpec = "$rootDir/api/user-template-open-api.yml"
+    outputDir = "$buildDir/generated"
+    apiPackage = "com.launch.template.api"
+    modelPackage = "com.launch.template.model"
+    configOptions = [
+            useSpringBoot3: "true",
+            dateLibrary    : "java17",
+            openApiNullable: "false",
+            delegatePattern  : "true",
+            useTags        : "true"
+    ]
+}
+
+
+
+description = 'java-template-api'

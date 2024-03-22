@@ -1,0 +1,38 @@
+plugins {
+	id 'org.springframework.boot' version '3.2.3'
+}
+
+dependencies {
+	implementation "org.projectlombok:lombok:${lombokVersion}"
+	implementation "org.mapstruct:mapstruct:${mapStructVersion}"
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+	implementation "org.springframework.boot:spring-boot-starter-log4j2"
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator:3.0.4'
+	implementation 'org.springframework.boot:spring-boot-starter-validation:3.0.4'
+	implementation project(':java-template-api')
+	implementation project(':java-template-application')
+	implementation project(':java-template-domain')
+	implementation project(':java-template-infrastructure-data')
+	testImplementation "org.springframework.boot:spring-boot-starter-test"
+	annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+	annotationProcessor "org.mapstruct:mapstruct-processor:${mapStructVersion}"
+}
+
+springBoot {
+	mainClass = "com.launch.template.service.JavaTemplateApplication"
+}
+
+
+sourceSets {
+	main {
+		java {
+			srcDirs = ['src/main/java',
+					   "$rootDir/api/build/generated/src/main/java"
+			]
+		}
+	}
+}
+
+description = 'java-template-service'

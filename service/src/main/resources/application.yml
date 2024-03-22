@@ -1,0 +1,13 @@
+actuator:
+  username: ${actuator_username}
+  password: ${actuator_password}
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+#        include: health,info,loggers,env,heapdump,metrics
+
